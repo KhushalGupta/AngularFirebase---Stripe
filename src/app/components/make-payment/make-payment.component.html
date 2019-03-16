@@ -1,0 +1,193 @@
+<head>
+  <script src="https://checkout.stripe.com/checkout.js"></script>
+ </head>
+
+ <h1>You are subscribed to: {{plan}}</h1>
+
+ <div id="generic_price_table">   
+<section>
+     <div class="container">
+         <div class="row">
+             <div class="col-md-12">
+                 <!--PRICE HEADING START-->
+                 <div class="price-heading clearfix">
+                     <h1>Subscription Plans</h1>
+                 </div>
+                 <!--//PRICE HEADING END-->
+             </div>
+         </div>
+     </div>
+     <div class="container">
+         
+         <!--BLOCK ROW START-->
+         <div class="row">
+
+             <div class="col-md-4">
+             
+               <!--PRICE CONTENT START-->
+                 <div class="generic_content clearfix" id="basicPlan">
+                     
+                     <!--HEAD PRICE DETAIL START-->
+                     <div class="generic_head_price clearfix">
+                     
+                         <!--HEAD CONTENT START-->
+                         <div class="generic_head_content clearfix">
+                         
+                           <!--HEAD START-->
+                             <div class="head_bg"></div>
+                             <div class="head">
+                                 <span>Basic</span>
+                             </div>
+                             <!--//HEAD END-->
+                             
+                         </div>
+                         <!--//HEAD CONTENT END-->
+                         
+                         <!--PRICE START-->
+                         <div class="generic_price_tag clearfix">	
+                             <span class="price">
+                                 <span class="sign">$</span>
+                                 <span class="currency">5</span>
+                                 <span class="cent">.00</span>
+                                 <span class="month">/Mon</span>
+                             </span>
+                         </div>
+                         <!--//PRICE END-->
+                         
+                     </div>                            
+                     <!--//HEAD PRICE DETAIL END-->
+                     
+                     <!--FEATURE LIST START-->
+                     <div class="generic_feature_list">
+                       <ul>
+                            <li><span>15 days free trial</span></li>
+                           <li><span>1 Manager</span></li>
+                         </ul>
+                     </div>
+                     <!--//FEATURE LIST END-->
+                     
+                     <!--BUTTON START-->
+                     <div class="generic_price_btn clearfix">
+                        <button (click)="handlePayment($event.target)" value="500">Buy</button>
+                     </div>
+                     <!--//BUTTON END-->
+                     
+                 </div>
+                 <!--//PRICE CONTENT END-->
+                     
+             </div>
+             
+             <div class="col-md-4">
+             
+               <!--PRICE CONTENT START-->
+                 <div class="generic_content clearfix" id="standardPlan">
+                     
+                     <!--HEAD PRICE DETAIL START-->
+                     <div class="generic_head_price clearfix">
+                     
+                         <!--HEAD CONTENT START-->
+                         <div class="generic_head_content clearfix">
+                         
+                           <!--HEAD START-->
+                             <div class="head_bg"></div>
+                             <div class="head">
+                                 <span>Standard</span>
+                             </div>
+                             <!--//HEAD END-->
+                             
+                         </div>
+                         <!--//HEAD CONTENT END-->
+                         
+                         <!--PRICE START-->
+                         <div class="generic_price_tag clearfix">	
+                             <span class="price">
+                                <span class="sign">$</span>
+                                <span class="currency">10</span>
+                                <span class="cent">.00</span>
+                                <span class="month">/Mon</span>
+                             </span>
+                         </div>
+                         <!--//PRICE END-->
+                         
+                     </div>                            
+                     <!--//HEAD PRICE DETAIL END-->
+                     
+                     <!--FEATURE LIST START-->
+                     <div class="generic_feature_list">
+                       <ul>
+                            <li><span>15 days free trial</span></li>
+                           <li><span>2 to 4 Managers</span></li>
+                         </ul>
+                     </div>
+                     <!--//FEATURE LIST END-->
+                     
+                     <!--BUTTON START-->
+                     <div class="generic_price_btn clearfix">
+                        <button (click)="handlePayment($event.target)" value="1000">Buy</button>
+                     </div>
+                     <!--//BUTTON END-->
+                     
+                 </div>
+                 <!--//PRICE CONTENT END-->
+                     
+             </div>
+             <div class="col-md-4">
+             
+               <!--PRICE CONTENT START-->
+                 <div class="generic_content clearfix" id="premiumPlan">
+                     
+                     <!--HEAD PRICE DETAIL START-->
+                     <div class="generic_head_price clearfix">
+                     
+                         <!--HEAD CONTENT START-->
+                         <div class="generic_head_content clearfix">
+                         
+                           <!--HEAD START-->
+                             <div class="head_bg"></div>
+                             <div class="head">
+                                 <span>Premium</span>
+                             </div>
+                             <!--//HEAD END-->
+                             
+                         </div>
+                         <!--//HEAD CONTENT END-->
+                         
+                         <!--PRICE START-->
+                         <div class="generic_price_tag clearfix">	
+                             <span class="price">
+                                <span class="sign">$</span>
+                                <span class="currency">15</span>
+                                <span class="cent">.00</span>
+                                <span class="month">/Mon</span>
+                             </span>
+                         </div>
+                         <!--//PRICE END-->
+                         
+                     </div>                            
+                     <!--//HEAD PRICE DETAIL END-->
+                     
+                     <!--FEATURE LIST START-->
+                     <div class="generic_feature_list">
+                       <ul>
+                          <li><span>15 days free trial</span></li>
+                          <li><span>5 to 10 Managers</span></li>
+                         </ul>
+                     </div>
+                     <!--//FEATURE LIST END-->
+                     
+                     <!--BUTTON START-->
+                     <div class="generic_price_btn clearfix">
+                        <button (click)="handlePayment($event.target)" value="1500">Buy</button>
+                     </div>
+                     <!--//BUTTON END-->
+                     
+                 </div>
+                 <!--//PRICE CONTENT END-->
+                     
+             </div>
+         </div>	
+         <!--//BLOCK ROW END-->
+         
+     </div>
+ </section>
+</div>

@@ -1,0 +1,143 @@
+<link href='https://fonts.googleapis.com/css?family=Roboto:100,300,400,500,600,700' rel='stylesheet' type='text/css' />
+<link rel="stylesheet" type="text/css" media="screen, print" href="https://cdn.materialdesignicons.com/2.3.54/css/materialdesignicons.min.css" />
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm"
+  crossorigin="anonymous">
+<script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN"
+  crossorigin="anonymous"></script>
+
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl"
+  crossorigin="anonymous"></script>
+
+
+
+<div class="row">
+	<div class="col-md-6">
+		<a [routerLink]="['/client/'+id]" href="#" class="btn btn-link"><i class="fa fa-arrow-circle-o-left"></i>Back to Details</a>
+	</div>
+	<div class="col-md-6">
+		
+	</div>
+</div>
+
+<div class="card">
+	<div class="card-header">
+	Edit Client
+	</div>
+	<div class="card-block">
+		<form novalidate #f="ngForm" (ngSubmit)="onSubmit(f)">
+			<div class="form-group">
+				<label for="firstName">First Name</label>
+				<input 
+					type="Text" 
+					name="firstName"
+					class="form-control"
+					[(ngModel)]="client.firstName"
+					#clientFirstName="ngModel"
+					minlength="2"
+					required
+					>
+					<div *ngIf="clientFirstName.errors?.required && clientFirstName.touched" class="alert alert.danger">
+						First name is required
+					</div>
+					<div *ngIf="clientFirstName.errors?.minlength && clientFirstName.touched" class="alert alert.danger">
+						Must be at least 2 characters
+					</div>
+			</div>
+
+			<div class="form-group">
+				<label for="lastName">Last Name</label>
+				<input 
+					type="Text" 
+					name="lastName"
+					class="form-control"
+					[(ngModel)]="client.lastName"
+					#clientLastName="ngModel"
+					minlength="2"
+					required
+					>
+					<div *ngIf="clientLastName.errors?.required && clientLastName.touched" class="alert alert.danger">
+						Last name is required
+					</div>
+					<div *ngIf="clientLastName.errors?.minlength && clientLastName.touched" class="alert alert.danger">
+						Must be at least 2 characters
+					</div>
+			</div>
+
+			<div class="form-group">
+				<label for="email">Email</label>
+				<input 
+					type="Text" 
+					name="email"
+					class="form-control"
+					[(ngModel)]="client.email"
+					#clientEmail="ngModel"
+					minlength="2"
+					required
+					>
+					<div *ngIf="clientEmail.errors?.required && clientEmail.touched" class="alert alert.danger">
+						Email is required
+					</div>
+			</div>
+
+			<div class="form-group">
+				<label for="balance">Password</label>
+				<input 
+					type="password" 
+					name="password"
+					class="form-control"
+					[(ngModel)]="client.password"
+					#clientPassword="ngModel"
+					required
+					>
+					<div *ngIf="clientPassword.errors?.required && clientPassword.touched" class="alert alert.danger">
+						Password is required
+					</div>
+			</div>
+
+			<div class="form-group">
+				<label for="phone">Phone</label>
+				<input 
+					type="Text" 
+					name="phone"
+					class="form-control"
+					[(ngModel)]="client.phone"
+					#clientPhone="ngModel"
+					minlength="10"
+					>
+					<div *ngIf="clientPhone.errors?.minlength && clientPhone.touched" class="alert alert.danger">
+						Must be at least 2 characters
+					</div>
+			</div>
+
+			<div class="form-group">
+				<label for="balance">Allowed Urls</label>
+			<div class="row">
+				<table class="table table-striped table-bordered col-lg-4">
+					<tbody>
+						<tr *ngFor="let field of client.fieldArray; let i = index">
+							<td>
+								<div class="input-group">
+									<div class="input-group-prepend">
+										<div (click)="deleteFieldValue(i)" class="input-group-text">
+											<i class="mdi mdi-close mdi-18px"></i>
+										</div>
+									</div>
+									<input [(ngModel)]="field.name" class="form-control" type="text" name="{{'field' + i}}" placeholder="Name...">
+								</div>
+							</td>
+						</tr>
+						<tr>
+							<td align="right">
+								<button class="btn btn-secondary btn-lg1" type="button" (click)="addFieldValue()" style="margin-right:10px">Add More Item</button>
+							</td>
+						</tr>
+					</tbody>
+				</table>
+			</div>
+			</div>
+
+				<input type="submit" class="btn btn-primary btn-block" value="Submit">
+
+		</form>
+	</div>
+</div>

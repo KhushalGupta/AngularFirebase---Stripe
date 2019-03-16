@@ -1,0 +1,27 @@
+i {
+    cursor: pointer;
+  }
+
+ul.options li {
+    background: #def url(../Images/cross_bright.png) no-repeat 98% center;
+    margin: 1px;
+    padding: 0.1em 0.3em;
+    cursor: pointer;
+    color: #46a;
+    font-weight: bold;
+    border: solid 1px #cde;
+    display: -webkit-box;
+}
+
+input[type="hidden" i] {
+  -webkit-appearance: initial;
+  background-color: initial;
+  cursor: default;
+  padding: initial;
+  border: initial;
+}
+
+ul {
+  padding: 0px;
+  margin-right: 515px;
+}

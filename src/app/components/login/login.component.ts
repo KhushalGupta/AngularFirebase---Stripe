@@ -23,6 +23,9 @@ export class LoginComponent implements OnInit {
   }
 
   onSubmit(){
+		localStorage.setItem('SuperUserEmail', this.email);
+		localStorage.setItem('SuperUserPassword', this.password);
+		
   	this.authService.login(this.email, this.password)
   		.then((res) => {
   			this.flashMessagesService.show('You are logged in', { cssClass: 'alert-success', timeout: 4000 });

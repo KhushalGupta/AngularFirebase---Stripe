@@ -15,6 +15,9 @@ export class ClientDetailsComponent implements OnInit {
 	hasBalance:boolean = false;
 	showBalanceUpdateInput:boolean = false;
 
+	users:any[];
+	cusId: string;
+
   constructor(
   	public flashMessagesService:FlashMessagesService,
   	public clientService:ClientService,
@@ -23,27 +26,47 @@ export class ClientDetailsComponent implements OnInit {
   	) { }
 
   ngOnInit() {
-  	// Get ID 
-  	this.id=this.route.snapshot.params['id'];
-  	// Get Client
-  	this.clientService.getClient(this.id).subscribe(client => {
-  		if(client.balance > 0){
-  			this.hasBalance = true;
-  		}
-  		this.client = client;
-  		console.log(this.client);
-  	});
+	
+	// Get ID 
+	this.id=this.route.snapshot.params['id'];
+	
+	// Get Client
+	this.clientService.getUsers().subscribe(users => {
+		this.users = users;
+		this.users.forEach((item) => {
+			if(item.email === localStorage.SuperUserEmail) {
+				this.cusId = item.$key;
+				this.clientService.getClient(this.cusId, this.id).subscribe(client => {
+					if(client.balance > 0){
+						this.hasBalance = true;
+					}
+					this.client = client;
+					console.log(this.client);
+				});
+			}
+		})
+		//console.log(this.users);
+	});
+
+  	
+  	// this.clientService.getClient(this.cusId, this.id).subscribe(client => {
+  	// 	if(client.balance > 0){
+  	// 		this.hasBalance = true;
+  	// 	}
+  	// 	this.client = client;
+  	// 	console.log(this.client);
+  	// });
   }
 
-  updateBalance(id:string){
-  		this.clientService.updateClient(this.id,this.client);
-  		this.flashMessagesService.show('Balance Updated', { cssClass: 'alert-success', timeout: 4000 });
-  		this.router.navigate(['/client/'+this.id]);
-  }
+//   updateBalance(id:string){
+//   		this.clientService.updateClient(this.id,this.client);
+//   		this.flashMessagesService.show('Balance Updated', { cssClass: 'alert-success', timeout: 4000 });
+//   		this.router.navigate(['/client/'+this.id]);
+//   }
 
   onDeleteClick(){
   	if (confirm("Are you sure to delete?")) {
-  		this.clientService.deleteClient(this.id);
+  		this.clientService.deleteClient(this.cusId, this.id);
   		this.flashMessagesService.show('Client Deleted', { cssClass: 'alert-success', timeout: 4000 });
   		this.router.navigate(['/']);
   	}

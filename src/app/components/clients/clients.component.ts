@@ -29,10 +29,10 @@ export class ClientsComponent implements OnInit {
     }
 
     ngOnInit() {
-    	this.clientService.getClients().subscribe(clients => {
-    	this.clients = clients;
-    	//console.log(this.clients);
-			});
+    	// this.clientService.getClients().subscribe(clients => {
+    	// this.clients = clients;
+    	// //console.log(this.clients);
+			// });
 			
 			this.clientService.getUsers().subscribe(users => {
 				this.users = users;
@@ -42,7 +42,11 @@ export class ClientsComponent implements OnInit {
 						this.clientService.getUser(this.userId).subscribe(user => {
 							this.user = user.membership;
 							//console.log(this.user.membership);
-							});
+						});
+						this.clientService.getClients(item.$key).subscribe(clients => {
+							 	this.clients = clients;
+								console.log(clients);
+						});
 					}
 				})
 				//console.log(this.users);

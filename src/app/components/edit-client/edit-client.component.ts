@@ -36,6 +36,9 @@ export class EditClientComponent implements OnInit {
 
 	newAttribute: any = {};
 
+	users:any[];
+	cusId: string;
+
   constructor(
   	public flashMessagesService:FlashMessagesService,
   	public clientService:ClientService,
@@ -48,18 +51,36 @@ export class EditClientComponent implements OnInit {
 
   	this.disableBalanceOnEdit = this.settingsService.getSettings().disableBalanceOnEdit;
   	// Get ID 
-  	this.id=this.route.snapshot.params['id'];
-  	// Get Client
-  	this.clientService.getClient(this.id).subscribe(client => {
-			client.password = window.atob(client["password"]);
-			// var passLength = client.password.length;
-			// client.password = '';
-			// for(var i=0; i<passLength; i++) {
-			// 	client.password = client.password + '';
-			// }
-  		this.client = client;
-  		console.log(this.client);
-  	});
+		this.id=this.route.snapshot.params['id'];
+		
+		// Get Client
+		this.clientService.getUsers().subscribe(users => {
+			this.users = users;
+			this.users.forEach((item) => {
+				if(item.email === localStorage.SuperUserEmail) {
+					this.cusId = item.$key;
+					this.clientService.getClient(this.cusId, this.id).subscribe(client => {
+						client.password = window.atob(client["password"]);
+
+						this.client = client;
+						this.fieldArray1 = this.client.fieldArray;
+						console.log(this.client);
+					});
+				}
+			})
+			//console.log(this.users);
+		});
+  	// // Get Client
+  	// this.clientService.getClient(this.id).subscribe(client => {
+		// 	client.password = window.atob(client["password"]);
+		// 	// var passLength = client.password.length;
+		// 	// client.password = '';
+		// 	// for(var i=0; i<passLength; i++) {
+		// 	// 	client.password = client.password + '';
+		// 	// }
+  	// 	this.client = client;
+  	// 	console.log(this.client);
+  	// });
   }
 
   onSubmit({value, valid}:{value:Client, valid:boolean}){
@@ -79,7 +100,7 @@ export class EditClientComponent implements OnInit {
   		this.router.navigate(['client/'+this.id]);
   	}else{
   		//Update client
-  		this.clientService.updateClient(this.id, value);
+  		this.clientService.updateClient(this.cusId, this.id, value);
   		this.flashMessagesService.show('Client updated', { cssClass: 'alert-success', timeout: 4000 });
   		this.router.navigate(['/client/'+this.id]);
   	}

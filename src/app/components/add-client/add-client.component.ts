@@ -42,6 +42,9 @@ export class AddClientComponent implements OnInit {
 
 	newAttribute: any = {};
 
+	users:any[];
+	id: string;
+
   constructor(
   	public flashMessagesService:FlashMessagesService,
   	public clientService:ClientService,
@@ -51,7 +54,17 @@ export class AddClientComponent implements OnInit {
   	) { }
 
   ngOnInit() {
-  	this.disableBalanceOnAdd = this.settingsService.getSettings().disableBalanceOnAdd;
+		this.disableBalanceOnAdd = this.settingsService.getSettings().disableBalanceOnAdd;
+		
+		this.clientService.getUsers().subscribe(users => {
+			this.users = users;
+			this.users.forEach((item) => {
+				if(item.email === localStorage.SuperUserEmail) {
+					this.id = item.$key;
+				}
+			})
+			//console.log(this.users);
+			});
   }
 
   onSubmit({value, valid}:{value:Client, valid:boolean}){
@@ -74,7 +87,7 @@ export class AddClientComponent implements OnInit {
   		this.router.navigate(['add-client']);
   	}else{
   		//Add new client
-  		this.clientService.newClient(value);
+  		this.clientService.newClient(value, this.id);
   		this.flashMessagesService.show('New client added', { cssClass: 'alert-success', timeout: 4000 });
   		this.router.navigate(['/']);
   	}

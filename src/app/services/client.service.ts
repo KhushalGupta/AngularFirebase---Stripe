@@ -13,28 +13,32 @@ export class ClientService {
    user: FirebaseObjectObservable<any>;
 
    constructor( public af : AngularFireDatabase ) {
-     this.clients = this.af.list('/clients') as FirebaseListObservable<Client[]>;
+     //this.clients = this.af.list('/clients') as FirebaseListObservable<Client[]>;
      this.users = this.af.list('/customers') as FirebaseListObservable<any[]>;
    }
 
-   getClients(){
-   return this.clients;
+   getClients(id:string){
+    this.clients = this.af.list('/customers/'+id+'/clients') as FirebaseListObservable<Client[]>;
+    return this.clients;
    }
 
-   newClient(client:Client){
+   newClient(client:Client, id:string){
+    this.clients = this.af.list('/customers/'+id+'/clients') as FirebaseListObservable<Client[]>;
    	this.clients.push(client);
    }
 
-   getClient(id:string){
-  	this.client = this.af.object('/clients/'+id) as FirebaseObjectObservable<Client>;	
+   getClient(cusId:string, id:string){
+  	this.client = this.af.object('/customers/'+cusId+'/clients/'+id) as FirebaseObjectObservable<Client>;	
   	return this.client;
    }
 
-   updateClient(id:string, client:Client){
+   updateClient(cusId:string, id:string, client:Client){
+    this.clients = this.af.list('/customers/'+cusId+'/clients') as FirebaseListObservable<Client[]>;
    	return this.clients.update(id, client);
    }
 
-   deleteClient(id:string){
+   deleteClient(cusId:string, id:string){
+    this.clients = this.af.list('/customers/'+cusId+'/clients') as FirebaseListObservable<Client[]>;
    	return this.clients.remove(id);
    }
 

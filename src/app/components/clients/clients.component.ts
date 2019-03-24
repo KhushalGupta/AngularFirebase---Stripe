@@ -62,17 +62,30 @@ export class ClientsComponent implements OnInit {
 		//console.log(this.user.membership);
 		if(typeof this.user !== 'undefined') {
 			var date = new Date(this.user.subscription.trial_start * 1000);
-		localStorage.setItem("date", date.toDateString());
+			localStorage.setItem("date", date.toDateString());
 
-			if(localStorage.getItem("count") === null || localStorage.getItem("date") !== new Date().toDateString()) {
+			if(localStorage.getItem("count") === null) {
 				document.getElementById("popup").classList.remove("display");
 				document.getElementById("overlay").classList.remove("display");
 			}
+
+			else if(localStorage.getItem("date") !== new Date().toDateString()) {
+				var newDate = new Date();
+
+				if(localStorage.getItem("todayDate") === null || localStorage.getItem("todayDate") !== newDate.toDateString()
+					 || localStorage.getItem("closeButton") === null) {
+					localStorage.setItem("closeButton", "clicked");
+					document.getElementById("popup").classList.remove("display");
+					document.getElementById("overlay").classList.remove("display");
+					localStorage.setItem("todayDate", newDate.toDateString());
+				}
+			}
+
 		var plan = this.user.membership;
 		var trialEnd = new Date(this.user.subscription.trial_end * 1000);
 		
 
-		var restriction = trialEnd.getTime()-date.getTime();
+		var restriction = trialEnd.getTime()-new Date().getTime();
 		var diffDays = Math.ceil(restriction / (1000 * 3600 * 24)); 
 		if(plan === "Basic Plan" && (restriction === 0 || restriction < 0)) {
 			if(this.clients.length === 1) {

@@ -12,18 +12,6 @@ import { AngularFireAuth } from 'angularfire2/auth';
   styleUrls: ['./add-client.component.css']
 })
 export class AddClientComponent implements OnInit {
-
-	// fieldArray1 = ['https://app.clickfunnels.com/dashboard',
-	// 							'https://app.clickfunnels.com/funnels',
-	// 							'https://app.clickfunnels.com/affiliates',
-	// 							'https://app.clickfunnels.com/affiliate_management',
-	// 							'https://app.clickfunnels.com/affiliate_commissions',
-	// 							'https://app.clickfunnels.com/affiliate_payments',
-	// 							'https://app.clickfunnels.com/affiliate_leaderboards',
-	// 							'https://app.clickfunnels.com/commission_plans',
-	// 							'https://app.clickfunnels.com/affiliate_types',
-	// 							'https://app.clickfunnels.com/affiliate_branding'];
-
 	fieldArray1: Array<any>= [
 															{'name':'https://app.clickfunnels.com/dashboard'},
 															{'name':'https://app.clickfunnels.com/funnels'}
@@ -42,7 +30,7 @@ export class AddClientComponent implements OnInit {
 
 	newAttribute: any = {};
 
-	users:any[];
+	users: any[];
 	id: string;
 
   constructor(
@@ -63,8 +51,7 @@ export class AddClientComponent implements OnInit {
 					this.id = item.$key;
 				}
 			})
-			//console.log(this.users);
-			});
+		});
   }
 
   onSubmit({value, valid}:{value:Client, valid:boolean}){
@@ -101,40 +88,5 @@ export class AddClientComponent implements OnInit {
   deleteFieldValue(index) {
     this.fieldArray1.splice(index, 1);
 	}
-	
-	selectIngredient(select) {
-		// var option = select.options[select.selectedIndex];
-		// var ul = select.parentNode.getElementsByTagName('ul')[0];
-
-		//this.allowedUrls.push(select.value);
-		
-			 
-// 		var choices = ul.getElementsByTagName('input');
-// 		for (var i = 0; i < choices.length; i++)
-// 			if (choices[i].value == option.value)
-// 				return;
-			 
-// 		var li = document.createElement('li');
-// 		var input = document.createElement('input');
-// 		var text = document.createTextNode(option.firstChild.data);
-			 
-// 		input.type = 'hidden';
-// 		input.name = 'ingredients[]';
-// 		input.value = option.value;
-	
-// 		li.appendChild(input);
-// 		li.appendChild(text);
-// 		li.setAttribute('(click)', 'removeFieldValue($event.target);');
-// 		li.setAttribute(option.attributes[0].name, option.attributes[0].value);          
-
-			
-// 		ul.appendChild(li);
-}
-
-removeFieldValue(field) {
-	//var index = this.allowedUrls.indexOf(field.innerText);
-	//this.allowedUrls.splice(index, 1);
-	//field.parentNode.getElementsByTagName('ul')[0].removeChild(field);	
-}
 
 }

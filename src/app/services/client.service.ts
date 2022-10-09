@@ -6,14 +6,13 @@ import { Client } from '../models/Client';
 @Injectable()
 export class ClientService {
 
-	clients: FirebaseListObservable<any[]>;
-   client: FirebaseObjectObservable<any>;
+	 clients: FirebaseListObservable<Client[]>;
+   client: FirebaseObjectObservable<Client>;
    
    users: FirebaseListObservable<any[]>;
    user: FirebaseObjectObservable<any>;
 
    constructor( public af : AngularFireDatabase ) {
-     //this.clients = this.af.list('/clients') as FirebaseListObservable<Client[]>;
      this.users = this.af.list('/customers') as FirebaseListObservable<any[]>;
    }
 
@@ -43,7 +42,6 @@ export class ClientService {
    }
 
    getUsers(){
-      //this.users = this.af.object('/customers') as FirebaseObjectObservable<any[]>;	
       return this.users;
     }
 

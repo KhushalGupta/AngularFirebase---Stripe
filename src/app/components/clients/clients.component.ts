@@ -1,139 +1,168 @@
-import { Component, OnInit } from '@angular/core';
-import { AngularFireDatabase } from 'angularfire2/database';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { ClientService } from '../../services/client.service';
 import { Client } from '../../models/Client';
+
+import { Subscription } from 'rxjs/Subscription';
+import { switchMap, tap, map, filter } from 'rxjs/operators';
+import { forkJoin } from 'rxjs';
+import { Observable } from 'rxjs';
+
+interface UserData {
+  $key: string;
+  userId: string;
+  email: string;
+  membership: {
+    membership: string;
+    subscription: {
+      trial_start: number;
+      trial_end: number;
+    }
+  };
+}
 
 @Component({
   selector: 'app-clients',
   templateUrl: './clients.component.html',
   styleUrls: ['./clients.component.css']
 })
-export class ClientsComponent implements OnInit {
+export class ClientsComponent implements OnInit, OnDestroy {
+  clients: Client[] = [];
+  totalOwed: number = 0;
 
-  	clients:Client[];
-  	//clients:any[];
-	totalOwed:number;
-	
-	users:any[];
-	user:any;
-	userId:string;
+  currentUserId!: string;
+  userMembership: any;
+  trialStatusMessage: string | null = null;
 
-    constructor(public clientService:ClientService/*, public db: AngularFireDatabase */) { 
-    	/*db.list('/clients')
-    	     .valueChanges().subscribe(clients => { 
-    	      this.clients = clients;
-    	console.log(this.clients);
-    	      });*/
+  private dataSubscription: Subscription;
+  private currentUserData: UserData | null = null;
 
-      
+  constructor(public clientService: ClientService) {}
+
+  ngOnInit() {
+    this.fetchData();
+    this.showInitialPopup();
+  }
+
+  ngOnDestroy() {
+    if (this.dataSubscription) {
+      this.dataSubscription.unsubscribe();
+    }
+  }
+
+  private fetchData(): void {
+    const superUserEmail = localStorage.getItem('SuperUserEmail');
+
+    this.dataSubscription = this.clientService.getUsers().pipe(
+      map(users => users.find((item: any) => item.email === superUserEmail) as UserData | undefined),
+      filter((user): user is UserData => !!user),
+      tap(user => {
+        this.currentUserData = user;
+        this.currentUserId = user.$key;
+      }),
+      switchMap(user => {
+        const membership$ = this.clientService.getUser(user.userId).pipe(
+          map(userData => userData.membership)
+        );
+        const clients$ = this.clientService.getClients(user.$key);
+
+        return forkJoin([membership$, clients$]);
+      })
+    ).subscribe(([membership, clients]) => {
+      this.userMembership = membership;
+      this.clients = clients;
+      this.calculateTotalOwed();
+
+      this.trialStatusMessage = this.getTrialStatusMessage();
+
+      this.toggleAddClientButton();
+
+    }, error => {
+      console.error('Error loading client data:', error);
+    });
+  }
+
+  private showInitialPopup(): void {
+    const count = localStorage.getItem("count");
+    if (parseInt(count || '0') === 0 || count === null) {
+        this.togglePopup(true);
+    }
+  }
+
+  private togglePopup(show: boolean): void {
+    const popup = document.getElementById("popup");
+    const overlay = document.getElementById("overlay");
+
+    if (popup && overlay) {
+      if (show) {
+        popup.classList.remove("display");
+        overlay.classList.remove("display");
+      } else {
+        popup.classList.add("display");
+        overlay.classList.add("display");
+      }
+    }
+  }
+
+  private calculateTotalOwed(): void {
+    this.totalOwed = this.clients.reduce((sum, client) => sum + (client.balance || 0), 0);
+  }
+
+  getTrialStatusMessage(): string | null {
+    const userData = this.currentUserData;
+    if (!userData || !this.userMembership || !this.userMembership.subscription) {
+      return null;
     }
 
-    ngOnInit() {
-    	// this.clientService.getClients().subscribe(clients => {
-    	// this.clients = clients;
-    	// //console.log(this.clients);
-			// });
-			
-			this.clientService.getUsers().subscribe(users => {
-				this.users = users;
-				this.users.forEach((item) => {
-					if(item.email === localStorage.SuperUserEmail) {
-						this.userId = item.userId;
-						this.clientService.getUser(this.userId).subscribe(user => {
-							this.user = user.membership;
-							//console.log(this.user.membership);
-						});
-						this.clientService.getClients(item.$key).subscribe(clients => {
-							 	this.clients = clients;
-								console.log(clients);
-						});
-					}
-				})
-				//console.log(this.users);
-				});
-			
-		if(parseInt(localStorage.getItem("count")) === 1 || localStorage.getItem("count") === null) {
-			document.getElementById("popup").className +="display";
-			document.getElementById("overlay").className +="display";
-		}
-	}
-	
-	check() {
-		//console.log(this.user.membership);
-		if(typeof this.user !== 'undefined') {
-			var date = new Date(this.user.subscription.trial_start * 1000);
-			localStorage.setItem("date", date.toDateString());
+    const membershipPlan = this.userMembership.membership;
+    const trialEndTimestamp = this.userMembership.subscription.trial_end;
+    const trialEndDate = new Date(trialEndTimestamp * 1000);
+    const timeRemainingMs = trialEndDate.getTime() - new Date().getTime();
+    const diffDays = Math.ceil(timeRemainingMs / (1000 * 3600 * 24));
 
-			if(localStorage.getItem("count") === null) {
-				document.getElementById("popup").classList.remove("display");
-				document.getElementById("overlay").classList.remove("display");
-			}
+    if (timeRemainingMs <= 0) {
+      return "Your trial period has ended";
+    }
 
-			else if(localStorage.getItem("date") !== new Date().toDateString()) {
-				var newDate = new Date();
+    if (diffDays > 1) {
+      return `Your trial period will end in ${diffDays} days`;
+    } else {
+      return `Your trial period will end in ${diffDays} day`;
+    }
+  }
 
-				if(localStorage.getItem("todayDate") === null || localStorage.getItem("todayDate") !== newDate.toDateString()
-					 || localStorage.getItem("closeButton") === null) {
-					localStorage.setItem("closeButton", "clicked");
-					document.getElementById("popup").classList.remove("display");
-					document.getElementById("overlay").classList.remove("display");
-					localStorage.setItem("todayDate", newDate.toDateString());
-				}
-			}
+  private toggleAddClientButton(): void {
+      const addClientButton = document.getElementById("addClient");
+      if (!addClientButton) return;
 
-		var plan = this.user.membership;
-		var trialEnd = new Date(this.user.subscription.trial_end * 1000);
-		
+      const plan = this.userMembership?.membership;
+      const timeRemainingMs = this.userMembership?.subscription ?
+                              new Date(this.userMembership.subscription.trial_end * 1000).getTime() - new Date().getTime() :
+                              -1;
 
-		var restriction = trialEnd.getTime()-new Date().getTime();
-		var diffDays = Math.ceil(restriction / (1000 * 3600 * 24)); 
-		if(plan === "Basic Plan" && (restriction === 0 || restriction < 0)) {
-			if(this.clients.length === 1) {
-				document.getElementById("addClient").style.display = "none";
-			}
-			else {
-				return "Your trial period has ended";
-			}
-		}
+      const clientCount = this.clients.length;
 
-		else if(plan === "Standard Plan" && (restriction === 0 || restriction < 0)) {
-			if(this.clients.length >= 4 && this.clients.length <= 5) {
-				document.getElementById("addClient").style.display = "none";
-			}
-			else {
-				return "Your trial period has ended";
-			}
-		}
+      let isRestricted = false;
 
-		else if(plan === "Premiuim Plan" && (restriction === 0 || restriction < 0)) {
-			if(this.clients.length >= 5  && this.clients.length <= 10) {
-				document.getElementById("addClient").style.display = "none";
-			}
-			else {
-				return "Your trial period has ended";
-			}
-		}
+      if (timeRemainingMs <= 0) {
+        if (plan === "Basic Plan" && clientCount >= 1) {
+            isRestricted = true;
+        } else if (plan === "Standard Plan" && clientCount >= 4) {
+            isRestricted = true;
+        } else if (plan === "Premiuim Plan" && clientCount >= 5) {
+            isRestricted = true;
+        }
+      }
 
-		else {
-			document.getElementById("addClient").style.display = "";
-			if(diffDays > 1) {
-				return "Your trial period  will end in " + diffDays + " days";
-			}
-			else {
-				return "Your trial period  will end in " + diffDays + " day";
-			}
-			
-		}
-		}
-		else {
-			document.getElementById("addClient").style.display = "none";
-		}
-	}
+      if (this.userMembership && !isRestricted) {
+          addClientButton.style.display = "";
+      } else {
+          addClientButton.style.display = "none";
+      }
+  }
 
-	close() {
-		localStorage.setItem("count", "1");
-		document.getElementById("popup").className +="display";
-		document.getElementById("overlay").className +="display";
-		return false;
-	}
+  close(): boolean {
+    localStorage.setItem("count", "1");
+    this.togglePopup(false);
+    return false;
+  }
 }
